@@ -4,8 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jdk.internal.net.http.common.Utils.close;
-
 public class PersonQueries {
 
     private static final String URL = "jdbc:derby:addressbook";
@@ -33,7 +31,8 @@ public class PersonQueries {
                     "INSERT INTO ADDRESSES" + "(FIRSTNAME, LASTNAME, EMAIL, PHONENUMBER) VALUES (?,?,?,?)"
             );
 
-        } catch (SQLException sqlException) {
+        }
+        catch (SQLException sqlException) {
             sqlException.printStackTrace();
             System.exit(1);
         }
@@ -50,7 +49,7 @@ public class PersonQueries {
             resultSet = selectAllPeople.executeQuery();
             results = new ArrayList<Person>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 results.add(new Person(
                         resultSet.getInt("addressID"),
                         resultSet.getString("firstName"),
@@ -58,13 +57,16 @@ public class PersonQueries {
                         resultSet.getString("email"),
                         resultSet.getString("phoneNumber")));
             }
-        } catch (SQLException sqlException) {
+        }
+        catch (SQLException sqlException) {
             sqlException.printStackTrace();
-        } finally {
-            try{
+        }
+        finally {
+            try {
                 assert resultSet != null;
                 resultSet.close();
-            } catch (SQLException sqlException) {
+            }
+            catch (SQLException sqlException) {
                 sqlException.printStackTrace();
                 close();
             }
@@ -95,17 +97,55 @@ public class PersonQueries {
                         resultSet.getString("email"),
                         resultSet.getString("phoneNumber")));
             }
-        } catch (SQLException sqlException) {
+        }
+        catch (SQLException sqlException) {
             sqlException.printStackTrace();
-        } finally {
+        }
+        finally {
             try {
+                assert resultSet != null;
                 resultSet.close();
-            } catch (SQLException sqlException) {
+            }
+            catch (SQLException sqlException) {
                 sqlException.printStackTrace();
                 close();
             }
         }
         return results;
+    }
+
+    public int addPerson(
+            String fname, String lname, String email, String num) {
+
+        int result = 0;
+
+        try {
+            insertNewPerson.setString(1, fname);
+            insertNewPerson.setString(2, lname);
+            insertNewPerson.setString(3, email);
+            insertNewPerson.setString(4, num);
+
+            // Insert new entry and return rows updated.
+            result = insertNewPerson.executeUpdate();
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            close();
+        }
+
+        return result;
+
+    }
+
+
+    public void close() {
+
+        try {
+            connection.close();
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 
 
