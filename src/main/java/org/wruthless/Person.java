@@ -17,6 +17,7 @@ public class Person {
         setFirstName(firstName);
         setLastName(lastName);
         setEmail(email);
+        setPhoneNumber(phoneNumber);
 
     }
 
